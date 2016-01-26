@@ -5,22 +5,70 @@
     //Required. Inputs the module expects.
     "inputs": [
         //e.g.
-        /*
         {
-            "id": "from",
-            "title":"From"
+            "id": "list_id",
+            "title":"List ID"
+        },
+        {
+            "id": "email_address",
+            "title":"Email"
+        },
+        {
+            "id": "email_type",
+            "title":"Email Type"
+        },
+        {
+            "id": "status",
+            "title":"Status"
+        },
+        {
+            "id": "language",
+            "title":"Language"
+        },
+        {
+            "id": "vip",
+            "title":"VIP"
         }
-        */
     ],
     //Required. Outputs the module emits.
     "outputs": [
       //e.g.
-      /*
         {
-            "id": "from",
-            "title":"From"
+            "id": "id",
+            "title":"ID"
+        },
+        {
+            "id": "email_address",
+            "title":"Subscriber Email"
+        },
+        {
+            "id": "unique_email_id",
+            "title":"Email ID"
+        },
+        {
+            "id": "email_type",
+            "title":"Email Type"
+        },
+        {
+            "id": "status",
+            "title":"Status"
+        },
+        {
+            "id": "merge_fields",
+            "title":"Merge Fields"
+        },
+        {
+            "id": "language",
+            "title":"Language"
+        },
+        {
+            "id": "_links",
+            "title":"Links"
         }
-      */
     ],
-    "title": "Mailchimp - Add New List Member" /* Required.A display name for the module */
+    "providers": [{
+        "name": "mailchimp"
+    }],
+    "icon": "dex-mailchimp",
+    "title": "Mailchimp Add New List Member" /* Required.A display name for the module */
 }
