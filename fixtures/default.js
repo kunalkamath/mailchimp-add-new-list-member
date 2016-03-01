@@ -63,13 +63,10 @@ module.exports = _.merge({
              */
             /*subscriber hash 75f73803e16f588696caeb51b63cdc09*/
             input: {
-                list_id : '83f21eba4b',
-                email_address: 'wcmaestro@mail.ru',
-                email_type: '',
-                status: 'subscribed',
-                merge_fields: '',
-                language: '',
-                vip: ''
+                list_id : '912e4f232b',
+                email_address: ['ilkovich@gmail.com', 'ilkovich+1@gmail.com', 'ilkovich+2@gmail.com', 'ilkovich+4@gmail.com'],
+                email_type: 'html',
+                status: 'subscribed'
             }
         }
     }

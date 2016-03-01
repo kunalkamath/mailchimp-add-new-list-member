@@ -1,71 +1,42 @@
-/*
- * Metadata describing the module operation
- */
 {
-    //Required. Inputs the module expects.
-    "inputs": [
-        //e.g.
-        {
-            "id": "list_id",
-            "title":"List ID"
-        },
-        {
-            "id": "email_address",
-            "title":"Email"
-        },
-        {
-            "id": "email_type",
-            "title":"Email Type"
-        },
-        {
-            "id": "status",
-            "title":"Status"
-        },
-        {
-            "id": "language",
-            "title":"Language"
-        },
-        {
-            "id": "vip",
-            "title":"VIP"
-        }
-    ],
-    //Required. Outputs the module emits.
-    "outputs": [
-      //e.g.
-        {
-            "id": "id",
-            "title":"ID"
-        },
-        {
-            "id": "email_address",
-            "title":"Subscriber Email"
-        },
-        {
-            "id": "unique_email_id",
-            "title":"Email ID"
-        },
-        {
-            "id": "email_type",
-            "title":"Email Type"
-        },
-        {
-            "id": "status",
-            "title":"Status"
-        },
-        {
-            "id": "merge_fields",
-            "title":"Merge Fields"
-        },
-        {
-            "id": "language",
-            "title":"Language"
-        },
-        {
-            "id": "_links",
-            "title":"Links"
-        }
-    ],
+    "inputs": [{
+        "id": "list_id",
+        "title":"List ID"
+    }, {
+        "id": "email_address",
+        "title":"Email"
+    }, {
+        "id": "email_type",
+        "title":"Email Type"
+    }, {
+        "id": "status",
+        "title":"Status"
+    }, {
+        "id": "language",
+        "title":"Language"
+    }, {
+        "id": "vip",
+        "title":"VIP"
+    }],
+    "outputs": [{
+        "id": "id",
+        "title":"ID"
+    }, {
+        "id": "email_address",
+        "title":"Subscriber Email"
+    }, {
+        "id": "unique_email_id",
+        "title":"Email ID"
+    }, {
+        "id": "email_type",
+        "title":"Email Type"
+    }, {
+        "id": "status",
+        "title":"Status"
+    }, {
+        "id": "language",
+        "title":"Language"
+    }],
     "providers": [{
         "name": "mailchimp"
     }],

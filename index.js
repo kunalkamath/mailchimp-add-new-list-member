@@ -2,6 +2,7 @@ var _            = require('lodash')
   ,  request     = require('request')
   ,  util        = require('./util')
   ,  querystring = require('querystring')
+  ,  q           = require('q')
   ,  pickInputs  = {
        list_id: {
             key: 'list_id',
@@ -10,21 +11,12 @@ var _            = require('lodash')
                 check: 'checkAlphanumeric'
             }
         },
-        email_address: {
-            key: 'email_address',
-            validate: {
-                req: true
-            }
-        },
         email_type: 'email_type',
         status: {
             key: 'status',
             validate: {
                 req: true
             }
-        },
-        merge_fields: {
-            key: 'merge_fields'
         },
         language: 'language',
         vip: 'vip'
@@ -35,9 +27,7 @@ var _            = require('lodash')
         unique_email_id: 'unique_email_id',
         email_type: 'email_type',
         status: 'status',
-        merge_fields: 'merge_fields',
-        language: 'language',
-        _links: '_links'
+        language: 'language'
     }
 ;
 
@@ -51,8 +41,11 @@ module.exports = {
     run: function(step, dexter) {
         var accessToken    = dexter.provider('mailchimp').credentials('access_token')
           , dc             = dexter.provider('mailchimp').data('dc')
+          , emails         = step.input('email_address')
           , inputs         = util.pickInputs(step, pickInputs)
           , validateErrors = util.checkValidateErrors(inputs, pickInputs)
+          , self           = this
+          , promises       = []
         ;
 
         if (validateErrors)
@@ -70,19 +63,51 @@ module.exports = {
           , baseUrl   = 'https://' + dc + '.api.mailchimp.com/3.0/'
         ;
 
-        request({
-            method    : 'POST'
-            , baseUrl : baseUrl
-            , uri     : uri
-            , json    : true
-            , body    : newInputs
-            , auth    : { "bearer" : accessToken }
-        }, function (error, response, body) {
-            if (!error && response.statusCode == 200) {
-                this.complete(util.pickOutputs(body, pickOutputs));
+        _.each(emails, function(email) {
+            promises.push(
+              q.nfcall(request, {
+                  method    : 'POST'
+                  , baseUrl : baseUrl
+                  , uri     : uri
+                  , json    : true
+                  , body    : _.extend(newInputs, { email_address: email })
+                  , auth    : { "bearer" : accessToken }
+                })
+                .then(function(result) {
+                  return q({
+                      email    : email
+                      , response : result[0]
+                      , body     : result[1]
+                  });
+                })
+                .catch(self.fail.bind(self))
+            );
+        });
+
+        q.all(promises)
+          .then(this.done.bind(this))
+          .catch(this.fail.bind(this));
+    }
+    , done: function (results) {
+        var self = this;
+
+        self.items = [];
+
+        _.each(results, function(result) {
+            var response = result.response
+              , body     = result.body
+              , req  = JSON.parse(_.get(response, 'request.body'))
+            ;
+
+            if (response.statusCode == 200) {
+                self.items.push(util.pickOutputs(body, pickOutputs));
+            } else if(_.get(body,'title') === 'Member Exists') {
+                self.log('Email already exists', result.email);
             } else {
-                this.fail(error || body);
+                self.fail(body);
             }
-        }.bind(this));
+        });
+
+        self.complete(self.items);
     }
 };
