@@ -1,5 +1,5 @@
 var _            = require('lodash')
-  ,  request     = require('request')
+  ,  request     = require('superagent')
   ,  util        = require('./util')
   ,  querystring = require('querystring')
   ,  q           = require('q')
@@ -64,24 +64,24 @@ module.exports = {
         ;
 
         _.each(emails, function(email) {
-            promises.push(
-              q.nfcall(request, {
-                  method    : 'POST'
-                  , baseUrl : baseUrl
-                  , uri     : uri
-                  , json    : true
-                  , body    : _.extend(newInputs, { email_address: email })
-                  , auth    : { "bearer" : accessToken }
-                })
-                .then(function(result) {
-                  return q({
-                      email    : email
-                      , response : result[0]
-                      , body     : result[1]
-                  });
-                })
-                .catch(self.fail.bind(self))
-            );
+            var data = _.extend(newInputs, { email_address: email })
+              , url  = baseUrl+uri
+              , deferred = q.defer()
+            ;
+
+            request.post(url)
+                .type('json')
+                .send(data)
+                .set('Authorization', 'Bearer '+accessToken)
+                .end(function(err, result) {
+                    deferred.resolve({
+                      email: email
+                      , response : result
+                      , body     : result.body
+                    });
+                });
+
+            promises.push(deferred.promise);
         });
 
         q.all(promises)
@@ -89,6 +89,7 @@ module.exports = {
           .catch(this.fail.bind(this));
     }
     , done: function (results) {
+        console.log('length', results.length);
         var self = this;
 
         self.items = [];
@@ -96,7 +97,6 @@ module.exports = {
         _.each(results, function(result) {
             var response = result.response
               , body     = result.body
-              , req  = JSON.parse(_.get(response, 'request.body'))
             ;
 
             if (response.statusCode == 200) {
