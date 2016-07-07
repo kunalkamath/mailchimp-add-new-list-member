@@ -18,12 +18,14 @@ var _            = require('lodash')
                 req: true
             }
         },
+        name: 'name',
         language: 'language',
         vip: 'vip'
     },
     pickOutputs = {
         id: 'id',
         email_address: 'email_address',
+        name: 'name',
         unique_email_id: 'unique_email_id',
         email_type: 'email_type',
         status: 'status',
@@ -42,6 +44,7 @@ module.exports = {
         var accessToken    = dexter.provider('mailchimp').credentials('access_token')
           , dc             = dexter.provider('mailchimp').data('dc')
           , emails         = step.input('email_address')
+          , names          = step.input('name')
           , inputs         = util.pickInputs(step, pickInputs)
           , validateErrors = util.checkValidateErrors(inputs, pickInputs)
           , self           = this
@@ -64,7 +67,7 @@ module.exports = {
         ;
 
         _.each(emails, function(email) {
-            var data = _.extend(newInputs, { email_address: email })
+            var data = _.extend(newInputs, { email_address: email, name: name })
               , url  = baseUrl+uri
               , deferred = q.defer()
             ;
@@ -76,6 +79,7 @@ module.exports = {
                 .end(function(err, result) {
                     deferred.resolve({
                       email: email
+                      , name : name
                       , response : result
                       , body     : result.body
                     });
